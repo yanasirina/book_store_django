@@ -1,3 +1,10 @@
 from django.contrib import admin
 
-# Register your models here.
+from . import models
+
+
+@admin.register(models.Book)
+class Book(admin.ModelAdmin):
+    list_display = ('name', 'price')
+    search_fields = ('name', )
+    ordering = ('price', )
