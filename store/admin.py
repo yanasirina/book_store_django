@@ -5,6 +5,6 @@ from . import models
 
 @admin.register(models.Book)
 class Book(admin.ModelAdmin):
-    list_display = ('name', 'price')
-    search_fields = ('name', )
+    list_display = ('name', 'author_name', 'price')
+    search_fields = ('name', 'author_name')
     ordering = ('price', )
