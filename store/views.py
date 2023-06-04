@@ -17,7 +17,7 @@ class BookViewSet(ModelViewSet):
             bookmarks_count=Count(Case(When(userbookrelation__in_bookmarks=True, then=1))),
             rating=Avg('userbookrelation__rating'),
             price_with_discount=F("price") - F("discount"),
-        ).order_by('id')
+        ).select_related('owner').prefetch_related('readers').order_by('id')
     serializer_class = serializers.BookSerializer
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
     permission_classes = [IsOwnerOrStaffOrReadOnly]

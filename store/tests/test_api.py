@@ -88,7 +88,7 @@ class BookApiTestCase(APITestCase):
             "name": "test name",
             "price": 100
         }
-        response = self.client.post(url, data=data)
+        response = self.client.post(url, data=data, content_type="application/json")
         self.assertEqual(status.HTTP_403_FORBIDDEN, response.status_code)
 
     def test_create(self):
