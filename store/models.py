@@ -13,6 +13,7 @@ class Book(models.Model):
     author_name = models.CharField(verbose_name='Имя Автора', max_length=255, blank=True, null=True)
     owner = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='owned_books')
     readers = models.ManyToManyField(User, through='UserBookRelation', related_name='books')
+    rating = models.DecimalField(verbose_name='Рейтинг', max_digits=3, decimal_places=2, null=True)
 
     class Meta:
         verbose_name = "Книга"
@@ -39,3 +40,14 @@ class UserBookRelation(models.Model):
 
     def __str__(self):
         return f'{self.user.username}: {self.book}, {self.rating}'
+
+    def save(self, *args, **kwargs):
+        from store.logic import set_rating
+
+        is_new_object = not self.pk
+        old_rating = self.rating
+        super().save(*args, **kwargs)
+        new_rating = self.rating
+
+        if old_rating != new_rating or is_new_object:
+            set_rating(self.book)

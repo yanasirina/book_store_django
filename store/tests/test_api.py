@@ -25,7 +25,6 @@ class BookApiTestCase(APITestCase):
         response = self.client.get(url)
         qs = Book.objects.all().annotate(
             bookmarks_count=Count(Case(When(userbookrelation__in_bookmarks=True, then=1))),
-            rating=Avg('userbookrelation__rating'),
             price_with_discount=F("price") - F("discount"),
         ).order_by('id')
         serializer_data = BookSerializer(qs, many=True).data
@@ -38,7 +37,6 @@ class BookApiTestCase(APITestCase):
         response = self.client.get(url, data={'price': 100.50})
         qs = Book.objects.filter(price=100.50).annotate(
             bookmarks_count=Count(Case(When(userbookrelation__in_bookmarks=True, then=1))),
-            rating=Avg('userbookrelation__rating'),
             price_with_discount=F("price") - F("discount"),
         ).order_by('id')
         serializer_data = BookSerializer(qs, many=True).data
@@ -51,7 +49,6 @@ class BookApiTestCase(APITestCase):
         response = self.client.get(url, data={'search': 'test'})
         qs = Book.objects.filter(Q(name__icontains='test') | Q(author_name__icontains='test')).annotate(
             bookmarks_count=Count(Case(When(userbookrelation__in_bookmarks=True, then=1))),
-            rating=Avg('userbookrelation__rating'),
             price_with_discount=F("price") - F("discount"),
         ).order_by('id')
         serializer_data = BookSerializer(qs, many=True).data
@@ -64,7 +61,6 @@ class BookApiTestCase(APITestCase):
         response = self.client.get(url, data={'ordering': 'price'})
         qs = Book.objects.all().annotate(
             bookmarks_count=Count(Case(When(userbookrelation__in_bookmarks=True, then=1))),
-            rating=Avg('userbookrelation__rating'),
             price_with_discount=F("price") - F("discount"),
         ).order_by('price')
         serializer_data = BookSerializer(qs, many=True).data
@@ -74,7 +70,6 @@ class BookApiTestCase(APITestCase):
         response = self.client.get(url, data={'ordering': '-price'})
         qs = Book.objects.all().annotate(
             bookmarks_count=Count(Case(When(userbookrelation__in_bookmarks=True, then=1))),
-            rating=Avg('userbookrelation__rating'),
             price_with_discount=F("price") - F("discount"),
         ).order_by('-price')
         serializer_data = BookSerializer(qs, many=True).data
